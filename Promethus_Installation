@@ -1,0 +1,23 @@
+
+
+
+
+
+
+
+
+
+Monitoring in AWS EC2
+Note:- Menttion the below line in prompetus servers
+
+For ec2s:- configration ins
+cat /etc/prometheus/prometheus.yml
+global:
+  scrape_interval: 1s
+  evaluation_interval: 1s
+
+scrape_configs:
+  - job_name: 'node'
+    ec2_sd_configs:
+      - region: us-west-2
+        port: 9100
