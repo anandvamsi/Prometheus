@@ -69,3 +69,16 @@ Outputs the rate at which particular counter is increasing
 
 Metric 
 node_uname_info wuill get you kernel.
+
+
+
+
+
+
+Queries worked for AWS metrics
+-----------------------------------
+sum(up)  -- instance that are up
+count( up == 0) -- instance that are down.
+100 * (1 - avg by(instance)(irate(node_cpu_seconds_total{mode='idle'}[5m]))) --- for cpu
+((node_memory_MemTotal_bytes - (node_memory_Cached_bytes + node_memory_Slab_bytes) - node_memory_MemFree_bytes) / (node_memory_MemTotal_bytes )) * 100 -- for Memory
+node_load1 -- server load
