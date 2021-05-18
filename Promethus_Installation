@@ -65,6 +65,29 @@ sudo systemctl enable node_exporter
 Note:- if you have multi Account want to get all the nodes in all the accounts,Then you need a assume role in all the child accounts which is having ec2 read access to pull the
 data.
 
+```
+#I am using prometheus port as 8082 istead of 9090
+[root@tower-git ~]# cat /etc/systemd/system/prometheus.service
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart=/usr/local/bin/prometheus \
+--config.file /etc/prometheus/prometheus.yml \
+--storage.tsdb.path /var/lib/prometheus/ \
+--web.console.templates=/etc/prometheus/consoles \
+--web.console.libraries=/etc/prometheus/console_libraries \
+--web.listen-address=:8082 \
+--web.enable-lifecycle
+
+[Install]
+WantedBy=multi-user.target
+```
 
 Here the the configration of promethus.yaml
 
