@@ -89,6 +89,11 @@ ExecStart=/usr/local/bin/prometheus \
 WantedBy=multi-user.target
 ```
 
+curl -X POST http://localhost:8082/-/reload  :- This will reload the changes no restart is required.
+
+
+
+
 Here the the configration of promethus.yaml
 
 ##cat /etc/prometheus/prometheus.yml
