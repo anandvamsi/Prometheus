@@ -1,0 +1,102 @@
+#Alert Manager installation and configuring
+#Here i have used AWS SES as the SMTP login.
+
+
+
+
+cd /tmp
+wget https://github.com/prometheus/alertmanager/releases/download/v0.16.2/alertmanager-0.16.2.linux-amd64.tar.gz
+tar -xvzf alertmanager-0.16.2.linux-amd64.tar.gz
+mv alertmanager-0.16.2.linux-amd64/alertmanager /usr/local/bin/
+mkdir /etc/alertmanager/
+vim /etc/alertmanager/alertmanager.yml
+vim /etc/prometheus/alert_rules.yml
+vim /etc/systemd/system/alertmanager.service
+vim /etc/prometheus/prometheus.yml
+systemctl daemon-reload
+systemctl start alertmanager
+systemctl status alertmanager
+
+
+
+
+
+
+>>contents of alert_rules.yml // same sure its in /etc/promethus directory.
+cat alert_rules.yml
+groups:
+- name: alert.rules
+  rules:
+  - alert: InstanceDown
+    expr: up == 0
+    for: 1m
+
+
+>>contents of alertmanager.yml
+cat /etc/alertmanager/alertmanager.yml
+global:
+  smtp_smarthost: 'XXXXXXX:25'
+  smtp_from: 'anand.vamsi@XXXXXXX.com'
+  smtp_auth_username: XXXXXXXXXXXXXXXXXXXXX
+  smtp_auth_password: XXXXXXXXXXXXXXXX/Hg+XXXXXXX
+
+
+route:
+  receiver: 'default-receiver'
+  group_wait: 30s
+  group_interval: 4h
+
+  group_by: ['service']
+
+  routes:
+  - match_re:
+      AccountID: 85XXXXXX
+    receiver: 'itopsdev'
+
+  - match_re:
+      AccountID: 88XXXXXX
+    receiver: 'default-receiver'
+
+
+receivers:
+- name: 'itopsdev'
+  email_configs:
+  - to: 'anand.vamsi@XXXXXXX.com'
+
+
+- name: 'default-receiver'
+  email_configs:
+  - to: 'anand.vamsi@XXXXXX.com
+
+>>contents of promethus.yml
+[root@ip-10-80-226-128 prometheus]# cat prometheus.yml
+global:
+  scrape_interval: 1s
+  evaluation_interval: 1s
+
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - localhost:9093
+
+rule_files:
+  - "alert_rules.yml"
+
+scrape_configs:
+  - job_name: ec2_instances
+    ec2_sd_configs:
+    # Discover instances in the same account
+      - port: 9100
+    # Discover instances in account 111111111111
+      ---------------------------------------
+      ---------------------------------------
+
+
+
+Note to get SMTP details
+Sign in to the AWS Management Console and open the Amazon SES console at https://console.aws.amazon.com/ses/.
+In the navigation pane, choose SMTP Settings.
+In the content pane, choose Create My SMTP Credentials.
+For Create User for SMTP, type a name for your SMTP user. Alternatively, you can use the default value that is provided in this field. When you finish, choose Create.
