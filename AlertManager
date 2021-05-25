@@ -1,3 +1,37 @@
+# what is Alert Manager
+- Alert Manager handles alerts fired by the promethus server
+- Handles deduplication, grouping and routing of alerts
+- Routes alerts to receivers(pager duty,email,slack)
+
+
+##Alert Manager Concepts:
+Grouping :- Groups similar Alerts into 1 notification
+Inhibitaton : Silence other alerts if one specified alert is already fired.
+             - site is down and if CPU is high
+                there will be only one alert for site is dowm
+Silence;- During the maintaince silence the 
+
+
+Notes;-
+Do not load balance this service,Instead use a list of alert manager in 
+promethus config
+
+
+
+Alert Manager port 
+http://10.80.226.128:9093/
+
+
+
+Alertstates:
+----------
+Inactive :- No rule is met
+Pending:- Rule is met but can suppress due to validation
+Firing - Alert is send to configured channel
+
+
+
+
 #Alert Manager installation and configuring
 #Here i have used AWS SES as the SMTP login.
 
