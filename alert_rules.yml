@@ -1,0 +1,46 @@
+ cat /etc/prometheus/alert_rules.yml
+groups:
+- name: ec2Instances
+
+  rules:
+
+  - alert: InstanceDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: "critical"
+    annotations:
+      summary: "Endpoint {{ $labels.instance }} down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute."
+
+  - alert: HostHighCpuLoad
+    expr: node_load1 > 1
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Host high CPU load (instance {{ $labels.instance }})"
+      description: Instance {{ $labels.instance }} under high load
+      value: '{{ $value }}'
+
+  - alert: RootDiskUtilization
+    expr: 100 - ((node_filesystem_avail_bytes{mountpoint="/",fstype!="rootfs"} * 100) /node_filesystem_size_bytes{mountpoint="/",fstype!="rootfs"}) > 51
+    labels:
+      instance: RootDiskfull
+    annotations:
+      summary: "Warning::Root Disk Alert for {{ $labels.instance }}"
+      description: "Root Disk Utilization crossed the thresold value, Present Utilization is {{ $value }}"
+  - alert: MemoryAlerts
+    expr: (((node_memory_MemTotal_bytes - (node_memory_Cached_bytes + node_memory_Slab_bytes) - node_memory_MemFree_bytes) / (node_memory_MemTotal_bytes )) * 100) > 20
+    labels:
+      Alerttype: HighMemoryComsuption
+    annotations:
+      summery: "High Memory consumption on {{ $labels.memory }} "
+      description: Instance {{ $labels.instance }} is consuming high memory {{ $value }}
+      
+      
+   Notes:-
+   To evualute the rules
+  /usr/local/bin/promtool check  rules  /etc/prometheus/alert_rules.yml
+  
+  
