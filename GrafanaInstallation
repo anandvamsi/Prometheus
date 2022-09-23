@@ -16,3 +16,7 @@ systemctl daemon-reload
 systemctl start grafana-server 
 systemctl enable grafana-server
 systemctl status grafana-server
+
+
+#If you have want to change the admin password in grafana
+grafana-cli admin reset-admin-password admin
